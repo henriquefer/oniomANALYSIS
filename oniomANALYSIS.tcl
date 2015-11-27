@@ -269,16 +269,16 @@ proc deleteTmpFiles {fileName} {
 	  	set searchOptimized [regexp {Optimized} $line1]
 	  }
 	  if {$searchOptimized==1} {
-	  set optimizedStructures [exec grep -n {Optimized Parameters} ANALYSIStmpFiles/linenumber_strucutres_opt_$fileName.tmp | cut -f1 -d:]
-	  set outputfile [open "PDB-Optimized-Structures-$fileName.pdb" w]
-	  set lines [split $optimizedStructures \n]
-	  foreach line $lines {
-	    incr i
-	    set finalline [expr int($numberAtoms + 1)]
-	    set structureOptimizedNumber [expr int($line - $i)]
-	    exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i
-	    exec cat ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i >> PDB-Optimized-Structures-$fileName.pdb
-	    file delete "all_optimized_PDB_$fileName.temp$i"
+		  set optimizedStructures [exec grep -n {Optimized Parameters} ANALYSIStmpFiles/linenumber_strucutres_opt_$fileName.tmp | cut -f1 -d:]
+		  set outputfile [open "PDB-Optimized-Structures-$fileName.pdb" w]
+		  set lines [split $optimizedStructures \n]
+		  foreach line $lines {
+		    incr i
+		    set finalline [expr int($numberAtoms + 1)]
+		    set structureOptimizedNumber [expr int($line - $i)]
+		    exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i
+		    exec cat ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i >> PDB-Optimized-Structures-$fileName.pdb
+		    file delete "all_optimized_PDB_$fileName.temp$i"
 	    }  
 	    exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > PDB-Last-Optimized-Structure-$fileName.pdb
 	}
@@ -287,7 +287,7 @@ proc deleteTmpFiles {fileName} {
 
 	proc lastStructurePDBFile {numberAtoms fileName} {
 	  set initialline [expr int($numberAtoms + 3)]
-	  exec egrep -B $initialline "#########" PDB-All-Structures-$fileName.pdb > PDB-Last-Strcuture-$fileName.pdb
+	  exec egrep -B $initialline "#########" PDB-All-Structures-$fileName.pdb > PDB-Last-Structure-$fileName.pdb
 	}
 
 ######################################################################################################################################
