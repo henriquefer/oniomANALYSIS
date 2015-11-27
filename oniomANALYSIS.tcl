@@ -266,23 +266,23 @@ proc deleteTmpFiles {fileName} {
 	  set readFile [read $openFile]
 	  set lines1 [split $readFile \n]
 	  foreach line1 $lines1 {
-	  	if {[regexp {Optimized} $line1]==1} {
-	  		set optimizedStructures [exec grep -n "Optimized Parameters" ANALYSIStmpFiles/linenumber_strucutres_opt_$fileName.tmp | cut -f1 -d:]
-	  		set outputfile [open "PDB-Optimized-Structures-$fileName.pdb" w]
-	  		set lines [split $optimizedStructures \n]
-	  		foreach line $lines {
-		    incr i
-		    set finalline [expr int($numberAtoms + 1)]
-		    set structureOptimizedNumber [expr int($line - $i)]
-		    exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i
-		    exec cat ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i >> PDB-Optimized-Structures-$fileName.pdb
-		    file delete "ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i"
-	    		}  
-	  		}
-	  	
+	  	set searchOptimized [regexp {Optimized} $line1]
 	  }
-	  exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > PDB-Last-Optimized-Structure-$fileName.pdb
-	  close $openFile
+	  if {$searchOptimized==1} {
+	  set optimizedStructures [exec grep -n {Optimized Parameters} ANALYSIStmpFiles/linenumber_strucutres_opt_$fileName.tmp | cut -f1 -d:]
+	  set outputfile [open "PDB-Optimized-Structures-$fileName.pdb" w]
+	  set lines [split $optimizedStructures \n]
+	  foreach line $lines {
+	    incr i
+	    set finalline [expr int($numberAtoms + 1)]
+	    set structureOptimizedNumber [expr int($line - $i)]
+	    exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i
+	    exec cat ANALYSIStmpFiles/all_optimized_PDB_$fileName.temp$i >> PDB-Optimized-Structures-$fileName.pdb
+	    file delete "all_optimized_PDB_$fileName.temp$i"
+	    }  
+	    exec egrep -A $finalline -B 1 "Structure [subst $structureOptimizedNumber]" PDB-All-Structures-$fileName.pdb > PDB-Last-Optimized-Structure-$fileName.pdb
+	}
+	close $openFile
 	}
 
 	proc lastStructurePDBFile {numberAtoms fileName} {
